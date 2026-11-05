@@ -1,0 +1,42 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "facturio",
+  "main": "worker-entry.js",
+  "triggers": {
+    "crons": ["0 8 * * *"]
+  },
+  "assets": {
+    "directory": ".open-next/assets",
+    "binding": "ASSETS"
+  },
+  "compatibility_date": "2026-08-21",
+  "compatibility_flags": ["nodejs_compat", "no_handle_cross_request_promise_resolution"],
+  "routes": [
+    { "pattern": "app.facturio.ch", "zone_id": "eef65b6944ef98aadd573d7be20a1030", "custom_domain": true },
+    { "pattern": "sign.facturio.ch", "zone_id": "eef65b6944ef98aadd573d7be20a1030", "custom_domain": true }
+  ],
+  "vars": {
+    "APP_BASE_URL": "https://app.facturio.ch",
+    "SIGNING_BASE_URL": "https://sign.facturio.ch",
+    "PUBLIC_BASE_URL": "https://facturio.ch",
+    "FROM_EMAIL": "facturio <emails@facturio.ch>",
+    "INVOICE_FROM_EMAIL": "facturio <emails@facturio.ch>",
+    "RESET_FROM_EMAIL": "facturio <emails@facturio.ch>",
+    "DOWNLOAD_TTL_DAYS": "30",
+    "PUBLIC_LOGO_URL": "",
+    "OPENPLZ_API_BASE": "https://openplzapi.org",
+    "GOOGLE_CLIENT_ID": "551914398175-ao8kv79ma7rc7nrrv6f4a5o0pshndmbl.apps.googleusercontent.com",
+    "STRIPE_PRO_PRICE_ID": "price_0UMrTBOY5TQqhds9SEvqwwR0"
+  },
+  "r2_buckets": [
+    { "binding": "INVOICE_PDFS", "bucket_name": "facturio-invoices" }
+  ],
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "facturio-db",
+      "database_id": "9210ac3d-51ba-443a-a1f8-ab1d70576066"
+    }
+  ],
+  "observability": { "enabled": true }
+}

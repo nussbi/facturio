@@ -1,0 +1,39 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "facturio-staging",
+  "main": "worker-entry.js",
+  "compatibility_date": "2025-10-26",
+  "compatibility_flags": ["nodejs_compat"],
+  "assets": {
+    "directory": ".open-next/assets",
+    "binding": "ASSETS"
+  },
+  "observability": {
+    "enabled": true
+  },
+  "routes": [
+    { "pattern": "staging.app.facturio.ch", "custom_domain": true },
+    { "pattern": "staging.sign.facturio.ch", "custom_domain": true }
+  ],
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "facturio-staging-db",
+      "database_id": "301a1f1f-74b1-4205-b15e-3984a1acf7f0"
+    }
+  ],
+  "r2_buckets": [
+    {
+      "binding": "INVOICE_PDFS",
+      "bucket_name": "facturio-staging-pdfs"
+    }
+  ],
+  "vars": {
+    "APP_BASE_URL": "https://staging.app.facturio.ch",
+    "PUBLIC_BASE_URL": "https://staging.facturio.ch",
+    "SIGNING_BASE_URL": "https://staging.sign.facturio.ch",
+    "FROM_EMAIL": "Facturio Staging <staging@facturio.ch>",
+    "INVOICE_FROM_EMAIL": "Facturio Staging <staging@facturio.ch>",
+    "STAGING_MODE": "1"
+  }
+}

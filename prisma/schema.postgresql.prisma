@@ -1,0 +1,254 @@
+// PostgreSQL version for production
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+enum OAuthProvider {
+  GOOGLE
+  SWISSID
+}
+
+enum Currency {
+  CHF
+  EUR
+}
+
+enum InvoiceStatus {
+  DRAFT
+  SENT
+  PAID
+  CANCELLED
+}
+
+enum ExpenseType {
+  TIME
+  ITEM
+}
+
+enum ExpenseStatus {
+  OPEN
+  SENT
+  PAID
+}
+
+enum Plan {
+  BETA
+  FREE
+  PRO
+}
+
+enum OutputSize {
+  A4_PORTRAIT_SHEET
+  QR_BILL_ONLY
+  QR_BILL_EXTRA_SPACE
+  PAYMENT_PART_ONLY
+  QR_CODE_ONLY
+  QR_CODE_WITH_QUIET_ZONE
+}
+
+model OrgProfile {
+  id         Int      @id @default(autoincrement())
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  userId     String?  @unique
+  user       User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  firstName  String?
+  lastName   String?
+  company    String?
+  street     String
+  street2    String?
+  zipCode    String
+  place      String
+  country    String   @default("CH")
+  email      String?
+  phone      String?
+  mobile     String?
+  iban       String
+  currency   Currency @default(CHF)
+  defaultVat Decimal?
+  vatNumber  String?
+}
+
+model Contact {
+  id           String    @id @default(cuid())
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  userId       String?
+  user         User?     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  company      String?
+  firstName    String?
+  lastName     String?
+  street       String
+  street2      String?
+  zipCode      String
+  place        String
+  telephoneFix String?
+  mobile       String?
+  email        String
+  country      String    @default("CH")
+  currency     Currency  @default(CHF)
+  iban         String?
+
+  invoices     Invoice[]
+  expenses     Expense[]
+  logs         ContactLog[]
+
+  @@index([userId])
+  @@unique([userId, company])
+}
+
+model ContactLog {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+
+  contactId String
+  contact   Contact  @relation(fields: [contactId], references: [id], onDelete: Cascade)
+
+  message   String
+}
+
+model Expense {
+  id          String       @id @default(cuid())
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+
+  userId      String?
+  user        User?        @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  type        ExpenseType
+  title       String?
+  description String
+  date        DateTime     @default(now())
+
+  quantity    Decimal
+  unit        String
+  unitPrice   Decimal
+  currency    Currency
+
+  status      ExpenseStatus @default(OPEN)
+  billable    Boolean      @default(true)
+
+  // Relations
+  contactId   String?
+  contact     Contact?     @relation(fields: [contactId], references: [id])
+
+  invoiceItems InvoiceItem[]
+
+  @@index([userId])
+}
+
+model Invoice {
+  id          String         @id @default(cuid())
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+
+  userId      String?
+  user        User?          @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  number      Int?
+  issueDate   DateTime       @default(now())
+  dueDate     DateTime?
+  status      InvoiceStatus  @default(DRAFT)
+  sentAt      DateTime?
+  paidAt      DateTime?
+
+  currency    Currency       @default(CHF)
+
+  reference   String?
+  message     String?
+
+  taxPercent  Decimal?
+  totalTax    Decimal        @default(0)
+  totalGross  Decimal        @default(0)
+
+  outputSize  OutputSize?
+
+  // Relations
+  contactId   String
+  contact     Contact        @relation(fields: [contactId], references: [id])
+
+  items       InvoiceItem[]
+
+  @@index([userId])
+  @@unique([userId, number])
+}
+
+model InvoiceItem {
+  id          String    @id @default(cuid())
+  createdAt   DateTime  @default(now())
+
+  description String
+  quantity    Decimal
+  unit        String
+  unitPrice   Decimal
+  currency    Currency
+  lineTotal   Decimal   @default(0)
+
+  // Relations
+  invoiceId   String
+  invoice     Invoice   @relation(fields: [invoiceId], references: [id])
+
+  expenseId   String?
+  expense     Expense?  @relation(fields: [expenseId], references: [id])
+}
+
+model User {
+  id                 String    @id @default(cuid())
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime  @updatedAt
+
+  email              String    @unique
+  name               String?
+  passwordHash       String?
+  role               Role      @default(USER)
+  founder            Boolean   @default(true)
+  profileCompleted   Boolean   @default(false)
+  plan               Plan      @default(BETA)
+
+  // Relations
+  orgProfile         OrgProfile?
+  contacts           Contact[]
+  expenses           Expense[]
+  invoices           Invoice[]
+
+  accounts           OAuthAccount[]
+  resetTokens        PasswordResetToken[]
+}
+
+model OAuthAccount {
+  id              String         @id @default(cuid())
+  createdAt       DateTime       @default(now())
+
+  provider        OAuthProvider
+  providerUserId  String
+
+  userId          String
+  user            User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerUserId])
+}
+
+model PasswordResetToken {
+  id         String   @id @default(cuid())
+  createdAt  DateTime @default(now())
+  token      String   @unique
+  userId     String
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expiresAt  DateTime
+  usedAt     DateTime?
+}

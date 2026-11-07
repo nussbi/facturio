@@ -59,3 +59,4 @@ export async function sendMail(opts: { to: string; subject: string; html?: strin
   console.info("--- EMAIL (dev) ---\nTo:", to, "\nSubject:", subject, "\nText:", text || "(no text)", "\nHTML:", html || "(no html)");
   return { ok: true, dev: true } as const;
 }
+

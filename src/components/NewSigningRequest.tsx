@@ -1,0 +1,147 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import PdfDocumentCanvas, { type FieldType, type SigningField } from "@/components/PdfDocumentCanvas";
+import quoteOcr from "@/lib/quote-ocr.cjs";
+const { parseQuoteText } = quoteOcr;
+type ContactOption = { id: string; label: string; email: string };
+type Extracted = { currency: "CHF" | "EUR"; total: number | null; description: string };
+
+export default function NewSigningRequest({ contacts }: { contacts: ContactOption[] }) {
+  const [file, setFile] = useState<File | null>(null);
+  const [url, setUrl] = useState("");
+  const [title, setTitle] = useState("");
+  const [recipientEmail, setRecipientEmail] = useState("");
+  const [contactId, setContactId] = useState("");
+  const [documentType, setDocumentType] = useState("OTHER");
+  const [activeType, setActiveType] = useState<FieldType>("signature");
+  const [fields, setFields] = useState<SigningField[]>([]);
+  const [extracted, setExtracted] = useState<Extracted | null>(null);
+  const [ocrLang, setOcrLang] = useState("eng");
+  const [working, setWorking] = useState(false);
+  const [status, setStatus] = useState("");
+  const [error, setError] = useState("");
+
+  useEffect(() => () => { if (url) URL.revokeObjectURL(url); }, [url]);
+
+
+  function chooseFile(next: File | null) {
+    if (url) URL.revokeObjectURL(url);
+    setFile(next); setUrl(next ? URL.createObjectURL(next) : ""); setFields([]); setExtracted(null); setError("");
+    if (next && !title) setTitle(next.name.replace(/\.pdf$/i, "").slice(0, 160));
+  }
+
+  async function extractQuote() {
+    if (!file || !url) return;
+    setWorking(true); setError(""); setStatus("Reading text in your browser…");
+    let worker: any;
+    try {
+      const pdfjs = await import("pdfjs-dist/legacy/build/pdf.mjs");
+      pdfjs.GlobalWorkerOptions.workerSrc = "/pdf.worker.min.mjs";
+      const loadingTask = pdfjs.getDocument({ url });
+      const pdf = await loadingTask.promise;
+      const chunks: string[] = [];
+      let hasText = false;
+      for (let number = 1; number <= pdf.numPages && number <= 50; number++) {
+        setStatus(`Reading quote, page ${number} of ${Math.min(pdf.numPages, 50)}…`);
+        const page = await pdf.getPage(number);
+        const content = await page.getTextContent();
+        const lineMap = new Map<number, string[]>();
+        for (const item of content.items as any[]) {
+          if (!("str" in item) || !item.str.trim()) continue;
+          const y = Math.round((item.transform?.[5] || 0) / 3) * 3;
+          const row = lineMap.get(y) || []; row.push(item.str); lineMap.set(y, row);
+        }
+        const nativeText = [...lineMap.entries()].sort((a, b) => b[0] - a[0]).map(([, row]) => row.join(" ")).join("\n").trim();
+        if (nativeText.length > 12) { chunks.push(nativeText); hasText = true; continue; }
+        if (!worker) {
+          setStatus("Scanned pages found. Loading OCR language data…");
+          const { createWorker } = await import("tesseract.js");
+          worker = await createWorker(ocrLang, 1, {
+            workerPath: "/tesseract.worker.min.js",
+            corePath: "/tesseract-core-simd-lstm.wasm.js",
+            langPath: "https://tessdata.projectnaptha.com/4.0.0",
+            logger: (message: any) => { if (message.status === "recognizing text") setStatus(`OCR page ${number}… ${Math.round((message.progress || 0) * 100)}%`); },
+          });
+        }
+        const viewport = page.getViewport({ scale: 1.6 });
+        const canvas = document.createElement("canvas");
+        canvas.width = viewport.width; canvas.height = viewport.height;
+        const context = canvas.getContext("2d");
+        if (!context) throw new Error("Canvas rendering is unavailable in this browser.");
+        await page.render({ canvas, canvasContext: context, viewport }).promise;
+        const result = await worker.recognize(canvas);
+        chunks.push(result.data.text || "");
+        canvas.width = 0; canvas.height = 0;
+      }
+      const parsed = parseQuoteText(chunks.join("\n"));
+      setExtracted({ currency: parsed.currency === "EUR" ? "EUR" : "CHF", total: parsed.total, description: parsed.description });
+      setStatus(`${hasText ? "Quote text read" : "OCR complete"}. Check every suggested value before continuing.`);
+      await loadingTask.destroy();
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Could not read this quote. You can enter its amount manually.");
+      setStatus("");
+    } finally {
+      await worker?.terminate?.();
+      setWorking(false);
+    }
+  }
+
+  async function submit(e: React.FormEvent) {
+    e.preventDefault(); setWorking(true); setError(""); setStatus("Saving secure document…");
+    try {
+      if (!file) throw new Error("Choose a PDF document first.");
+      if (fields.length === 0 || !fields.some((field) => field.type === "signature")) throw new Error("Add at least one signature field to the document.");
+      if (documentType === "QUOTE" && (!extracted?.total || extracted.total <= 0)) throw new Error("Extract or manually enter a positive quote amount before continuing.");
+      const form = new FormData();
+      form.set("file", file); form.set("title", title); form.set("recipientEmail", recipientEmail);
+      form.set("documentType", documentType); form.set("contactId", contactId); form.set("fields", JSON.stringify(fields));
+      if (documentType === "QUOTE" && extracted) form.set("extractedData", JSON.stringify(extracted));
+      const response = await fetch("/app/api/signing", { method: "POST", body: form });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.error || "Could not save signing request.");
+      window.location.assign(`/app/signing/${encodeURIComponent(data.id)}`);
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Could not save signing request."); setStatus(""); setWorking(false);
+    }
+  }
+
+  return <form onSubmit={submit} className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_340px]">
+    <section className="min-w-0 space-y-4">
+      <div className="rounded-xl border border-gray-200 bg-white p-4">
+        <label className="mb-2 block text-sm font-semibold text-gray-800">Document PDF</label>
+        <input type="file" accept="application/pdf,.pdf" onChange={(e) => chooseFile(e.target.files?.[0] || null)} required className="block w-full text-sm text-gray-600 file:mr-3 file:rounded-md file:border-0 file:bg-emerald-50 file:px-3 file:py-2 file:font-semibold file:text-emerald-800" />
+        <p className="mt-2 text-xs text-gray-500">PDF only, up to 12 MB and 100 pages. Upload your own documents or Facturio quotes. Scanned PDFs are supported via in-browser OCR.</p>
+      </div>
+      {url && <div className="rounded-xl border border-gray-200 bg-gray-50 p-3 sm:p-5">
+        <div className="mb-3 flex flex-wrap items-center gap-2">
+          <label className="text-xs font-semibold text-gray-600">Add field</label>
+          {(["signature", "initials", "date"] as FieldType[]).map((type) => <button key={type} type="button" onClick={() => setActiveType(type)} className={`rounded-md px-3 py-1.5 text-xs font-semibold capitalize ${activeType === type ? "bg-indigo-700 text-white" : "border border-gray-300 bg-white text-gray-700"}`}>{type}</button>)}
+          <span className="ml-auto text-xs text-gray-500">Click a page to place it · × removes</span>
+        </div>
+        <PdfDocumentCanvas url={url} fields={fields} interactive activeType={activeType} onAdd={(field) => setFields((old) => [...old, field])} onRemove={(id) => setFields((old) => old.filter((f) => f.id !== id))} />
+      </div>}
+    </section>
+    <aside className="space-y-4">
+      <div className="space-y-3 rounded-xl border border-gray-200 bg-white p-4">
+        <h2 className="font-semibold text-gray-900">Signing request</h2>
+        <label className="block text-sm">Title<input required maxLength={160} value={title} onChange={(e) => setTitle(e.target.value)} className="mt-1 w-full rounded-md border border-gray-300 px-3 py-2" /></label>
+        <label className="block text-sm">Document type<select value={documentType} onChange={(e) => { setDocumentType(e.target.value); setExtracted(null); }} className="mt-1 w-full rounded-md border border-gray-300 px-3 py-2"><option value="OTHER">Other document</option><option value="AGREEMENT">Agreement</option><option value="QUOTE">Quote (extract to draft invoice)</option></select></label>
+        <label className="block text-sm">Customer<select value={contactId} onChange={(e) => { setContactId(e.target.value); const c = contacts.find((item) => item.id === e.target.value); if (c) setRecipientEmail(c.email); }} className="mt-1 w-full rounded-md border border-gray-300 px-3 py-2"><option value="">Choose a customer (optional)</option>{contacts.map((c) => <option key={c.id} value={c.id}>{c.label} · {c.email}</option>)}</select></label>
+        <label className="block text-sm">Signer email<input required type="email" value={recipientEmail} onChange={(e) => setRecipientEmail(e.target.value)} className="mt-1 w-full rounded-md border border-gray-300 px-3 py-2" /></label>
+        {documentType === "QUOTE" && <div className="space-y-3 rounded-lg border border-emerald-200 bg-emerald-50/70 p-3">
+          <div><h3 className="text-sm font-semibold text-emerald-950">Quote → invoice draft</h3><p className="mt-1 text-xs text-emerald-900">Text extraction/OCR runs in your browser. Suggestions are never auto-approved; review them before the invoice draft is created.</p></div>
+          <label className="block text-xs text-gray-700">OCR language<select value={ocrLang} onChange={(e) => setOcrLang(e.target.value)} className="mt-1 w-full rounded-md border border-gray-300 bg-white px-2 py-1.5"><option value="eng">English</option><option value="deu">German</option><option value="fra">French</option><option value="ita">Italian</option></select></label>
+          <button type="button" disabled={!file || working} onClick={extractQuote} className="w-full rounded-md border border-emerald-700 bg-white px-3 py-2 text-xs font-semibold text-emerald-900 disabled:opacity-50">Extract quote amount</button>
+          {extracted && <div className="space-y-2 border-t border-emerald-200 pt-3">
+            <label className="block text-xs">Description<input value={extracted.description} maxLength={200} onChange={(e) => setExtracted({ ...extracted, description: e.target.value })} className="mt-1 w-full rounded border border-gray-300 bg-white px-2 py-1.5" /></label>
+            <div className="grid grid-cols-[1fr_95px] gap-2"><label className="block text-xs">Amount<input type="number" min="0.01" step="0.01" value={extracted.total ?? ""} onChange={(e) => setExtracted({ ...extracted, total: e.target.value ? Number(e.target.value) : null })} className="mt-1 w-full rounded border border-gray-300 bg-white px-2 py-1.5" /></label><label className="block text-xs">Currency<select value={extracted.currency} onChange={(e) => setExtracted({ ...extracted, currency: e.target.value as "CHF" | "EUR" })} className="mt-1 w-full rounded border border-gray-300 bg-white px-2 py-1.5"><option>CHF</option><option>EUR</option></select></label></div>
+          </div>}
+        </div>}
+        <div className="space-y-2 rounded-md border border-gray-100 bg-gray-50 p-3 text-xs text-gray-600"><div>{fields.length} field{fields.length === 1 ? "" : "s"} placed</div><div>{fields.filter((f) => f.type === "signature").length} signatures · {fields.filter((f) => f.type === "initials").length} initials · {fields.filter((f) => f.type === "date").length} dates</div></div>
+        {status && <p aria-live="polite" className="text-xs text-gray-500">{status}</p>}{error && <p role="alert" className="text-sm text-rose-700">{error}</p>}
+        <button type="submit" disabled={!file || working} className="w-full rounded-md bg-emerald-700 px-4 py-2.5 text-sm font-semibold text-white disabled:opacity-50">Save signing request</button>
+      </div>
+    </aside>
+  </form>;
+}

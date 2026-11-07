@@ -67,3 +67,6 @@ export function clearSession(res: Response) {
   const secure = process.env.NODE_ENV === "production" ? "; Secure" : "";
   res.headers.set("Set-Cookie", `${SESSION_COOKIE}=; Path=/; HttpOnly; SameSite=Lax${secure}; Max-Age=0`);
 }
+
+
+

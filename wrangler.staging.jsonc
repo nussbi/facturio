@@ -1,19 +1,29 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "facturio-staging-deprecated",
-  "main": "worker-entry.js",
-  "compatibility_date": "2025-10-26",
-  "compatibility_flags": ["nodejs_compat"],
+  "account_id": "0a5ddf83dd7904f7bce0edaccad0cea2",
+  "main": ".open-next/worker.js",
+  "workers_dev": false,
   "assets": {
     "directory": ".open-next/assets",
     "binding": "ASSETS"
   },
-  "observability": {
-    "enabled": true
-  },
+  "compatibility_date": "2026-08-21",
+  "compatibility_flags": ["nodejs_compat", "no_handle_cross_request_promise_resolution"],
   "routes": [
-    { "pattern": "staging.app.facturio.ch", "custom_domain": true },
-    { "pattern": "staging.sign.facturio.ch", "custom_domain": true }
+    { "pattern": "staging.app.facturio.ch", "zone_id": "eef65b6944ef98aadd573d7be20a1030", "custom_domain": true },
+    { "pattern": "staging.sign.facturio.ch", "zone_id": "eef65b6944ef98aadd573d7be20a1030", "custom_domain": true }
+  ],
+  "vars": {
+    "APP_BASE_URL": "https://staging.app.facturio.ch",
+    "SIGNING_BASE_URL": "https://staging.sign.facturio.ch",
+    "PUBLIC_BASE_URL": "https://staging.facturio.ch",
+    "STAGING_MODE": "1",
+    "FROM_EMAIL": "Facturio Staging <staging@facturio.ch>",
+    "INVOICE_FROM_EMAIL": "Facturio Staging <staging@facturio.ch>"
+  },
+  "r2_buckets": [
+    { "binding": "INVOICE_PDFS", "bucket_name": "facturio-staging-pdfs" }
   ],
   "d1_databases": [
     {
@@ -22,18 +32,5 @@
       "database_id": "301a1f1f-74b1-4205-b15e-3984a1acf7f0"
     }
   ],
-  "r2_buckets": [
-    {
-      "binding": "INVOICE_PDFS",
-      "bucket_name": "facturio-staging-pdfs"
-    }
-  ],
-  "vars": {
-    "APP_BASE_URL": "https://staging.app.facturio.ch",
-    "PUBLIC_BASE_URL": "https://staging.facturio.ch",
-    "SIGNING_BASE_URL": "https://staging.sign.facturio.ch",
-    "FROM_EMAIL": "Facturio Staging <staging@facturio.ch>",
-    "INVOICE_FROM_EMAIL": "Facturio Staging <staging@facturio.ch>",
-    "STAGING_MODE": "1"
-  }
+  "observability": { "enabled": true }
 }

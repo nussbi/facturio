@@ -609,3 +609,4 @@ async function generateCustomInvoicePDF(payload: QrBillPayload, qrData: any, isS
     pdf.end();
   });
 }
+

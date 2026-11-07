@@ -1,10 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
 
+const { redactPortalPath } = require("@/lib/portal-privacy.cjs");
+
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
   const hostname = request.headers.get("host") || "";
 
-  console.log(`[MIDDLEWARE] ${hostname} -> ${pathname}`);
+  console.log(`[MIDDLEWARE] ${hostname} -> ${redactPortalPath(pathname)}`);
 
   // Local dev: redirect root to login page
   if ((hostname === "localhost:3002" || hostname === "127.0.0.1:3002") && pathname === "/") {
@@ -50,7 +52,13 @@ export function middleware(request: NextRequest) {
     }
   }
 
-  return NextResponse.next();
+  const response = NextResponse.next();
+  if (pathname.startsWith("/portal/") || pathname.includes("/api/public/portal/")) {
+    response.headers.set("Cache-Control", "private, no-store");
+    response.headers.set("Referrer-Policy", "no-referrer");
+    response.headers.set("X-Robots-Tag", "noindex, nofollow");
+  }
+  return response;
 }
 
 export const config = {
@@ -65,3 +73,4 @@ export const config = {
     '/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
   ],
 };
+

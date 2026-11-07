@@ -20,6 +20,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 20
     env:
+      DATABASE_URL: file:./ci-build-only.db
       SOURCE_URL: ${{ inputs.source_url }}
       EXPECTED_HEAD: ${{ inputs.expected_head }}
       SOURCE_SHA256: 017a6d67be12b3b0d6eca7aaffcfa1583de7a37667cc86d05e526955cd49e28a

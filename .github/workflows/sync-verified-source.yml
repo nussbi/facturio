@@ -23,7 +23,7 @@ jobs:
       DATABASE_URL: file:./ci-build-only.db
       SOURCE_URL: ${{ inputs.source_url }}
       EXPECTED_HEAD: ${{ inputs.expected_head }}
-      SOURCE_SHA256: 017a6d67be12b3b0d6eca7aaffcfa1583de7a37667cc86d05e526955cd49e28a
+      SOURCE_SHA256: bd511f0d71155f2d774187e43b5ecc12f308c21a6f46ed855e86c6335cd75c86
     steps:
       - uses: actions/checkout@v4
         with:
@@ -67,8 +67,8 @@ jobs:
         run: |
           npm ci
           npx prisma generate --schema prisma/schema.prisma
-      - name: Portal and branding regression tests
-        run: node --test src/lib/customer-portal*.test.cjs src/lib/brand.test.cjs
+      - name: Signing, portal and branding regression tests
+        run: node --test src/lib/signing-flow.test.cjs src/lib/customer-portal*.test.cjs src/lib/brand.test.cjs
       - name: Build existing Cloudflare application
         run: npx opennextjs-cloudflare build --dangerouslyUseUnsupportedNextVersion
       - name: Verify source remained unchanged and commit
@@ -88,6 +88,6 @@ jobs:
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add --all
           git diff --cached --quiet && exit 0
-          git commit -m 'feat: restore complete deployed Facturio source, shared design and portal PDF fix'
+          git commit -m 'fix: translate signing, repair PDF editor and sending, list signed customer documents'
           git push origin HEAD:main
           printf 'Verified source commit: `%s`\n' "$(git rev-parse HEAD)" >> "$GITHUB_STEP_SUMMARY"

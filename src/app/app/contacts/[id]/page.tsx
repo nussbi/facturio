@@ -7,6 +7,8 @@ import { FileText, Clock, CheckCircle, AlertCircle, ChevronRight } from "lucide-
 import { getCurrentUser } from "@/server/auth";
 import { redirect } from "next/navigation";
 import PortalShareButton from "@/components/PortalShareButton";
+import SignedCustomerDocuments from "@/components/SignedCustomerDocuments";
+const { customerSignedFilter } = require("@/lib/signing-flow.cjs");
 
 export default async function ContactDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const user = await getCurrentUser();
@@ -16,6 +18,9 @@ export default async function ContactDetailPage({ params }: { params: Promise<{ 
   if (!contact) return <div className="p-6">Not found</div>;
   const logs = await prisma.contactLog.findMany({ where: { contactId: id }, orderBy: { createdAt: "desc" } });
   const invoices = await prisma.invoice.findMany({ where: { contactId: id, userId: user.id }, orderBy: { createdAt: "desc" }, take: 10 });
+
+  const matchingContacts = contact.email ? await prisma.contact.findMany({ where: { userId: user.id, email: contact.email }, select: { id: true }, take: 2 }) : [];
+  const signedDocuments = await prisma.signingEnvelope.findMany({ where: customerSignedFilter(user.id, contact.id, contact.email, matchingContacts.length === 1), orderBy: { signedAt: "desc" }, take: 100, select: { id: true, title: true, documentType: true, signerName: true, signedAt: true } });
 
   const displayName = contact.company || `${contact.firstName ?? ""} ${contact.lastName ?? ""}`.trim() || contact.email;
 
@@ -74,6 +79,8 @@ export default async function ContactDetailPage({ params }: { params: Promise<{ 
         </CardContent>
       </Card>
 
+
+      <SignedCustomerDocuments contactId={contact.id} documents={signedDocuments.map(document => ({ ...document, signedAt: document.signedAt?.toISOString() || null }))} />
 
       <Card>
         <CardHeader>

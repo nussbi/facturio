@@ -15,6 +15,10 @@
     "sha256": "db3f2771eaafda6c8bd4eab80b4ac9a602cc1607eb54b6cd1d522b5ecd851089",
     "git_blob": "a91e8ba6b33bfa614b0b2579bf6bb5aa2c0d2c8b"
   },
+  "SIGNING-UPDATE.md": {
+    "sha256": "5879ffd495ee6656116984c818cc3fca5070963ff6e94c932880ff9c9bc97d74",
+    "git_blob": "027b05acd46b7be22120e3842b36bcabd4b6445d"
+  },
   "SOURCE-SYNC.md": {
     "sha256": "143b4ea93987d27bafb82990fc71f7605310ea59e31fba046010e462b6fd2049",
     "git_blob": "9fa798be9619164a1f31b79de12f24f49eeb182b"
@@ -296,8 +300,8 @@
     "git_blob": "bc45cc59487d6aec8d6a95ab9e568c6c71ea8ec9"
   },
   "src/app/api/send/[id]/route.ts": {
-    "sha256": "e56a3b10db5eeab478560527ef6dca2d8f469d0608fe4edb17269c88c973ca9a",
-    "git_blob": "d1657ec5b3032ca9d8c8d512abfb0c8e74fb8bea"
+    "sha256": "edef42bd3ee200caad83455d3c3baad36c169bb10b0a2eb9c05efcfb6de46ee3",
+    "git_blob": "10a9549460f225ef67f2a2dfc2dd58a1ddaef528"
   },
   "src/app/api/sign/[token]/document/route.ts": {
     "sha256": "37bb4769e4abc4378532bd3a2f78e7d0d92d88da9250e2d8d756a7c6a984e91a",
@@ -312,16 +316,16 @@
     "git_blob": "48c31aed0fa53133f73ee080cfcd3c8a63b60d93"
   },
   "src/app/api/upload/[id]/document/route.ts": {
-    "sha256": "e8cfcfbade30e534ceca5f082b5d1d7c71502aa531edf4b7eb9ed9d1b04b4e6d",
-    "git_blob": "6ff641eb27204070ad5abb41cb92ead42422cefc"
+    "sha256": "40ff6d78a7e968b1309305c7cd6b54f0d7c3f0876493dbc65e0d983d44d862eb",
+    "git_blob": "4100c711128fc9a0581c4871728f5d61ada7d98f"
   },
   "src/app/api/upload/[id]/route.ts": {
-    "sha256": "c00acad0550eef04a3a2859d74ca68a77ab8e708d315b919cb193edaa18b6455",
-    "git_blob": "b7081e8b8e892861691f12750ad87eef8168fb65"
+    "sha256": "96096e9b4b9ad24706ef7820668a1eadc402f9a861035d3eb9b5e0516e2cd239",
+    "git_blob": "e2ae0c62df98ced297e6f1333f4211a845e0f7c0"
   },
   "src/app/api/upload/route.ts": {
-    "sha256": "fc99a08e495ecbf8df6417c327ea087b23fb2b0619986b09aece25cb520e3a5a",
-    "git_blob": "00964021a7b81cd5fe7efe38519d6c09c8ae956d"
+    "sha256": "8db85ad2fbeb492ecd56f125fc72625614c1bf8893e1237b0f48873057601885",
+    "git_blob": "64127e36866f921ac10599c9d60f27f8ecce8437"
   },
   "src/app/app/api/admin/archive-invoices/route.ts": {
     "sha256": "b3412bc9d753dad0d5d359992a484967b54987eade861f6b7e2e90f7547d135a",
@@ -476,16 +480,16 @@
     "git_blob": "815ca79e8d2e08aa41156e9d6f7389a1167b806c"
   },
   "src/app/app/api/signing/[id]/document/route.ts": {
-    "sha256": "33d90b49e30b37880c993857adcc8e1979ef8022a5411e8b8a25e412828a848f",
-    "git_blob": "789367d64eae3345d709469fbf35609eaa7c5433"
+    "sha256": "a21f0a3dbcd29d6e3496724fd5d516fe224d416258e1600d6b3144283b8ccedd",
+    "git_blob": "6bfba112e7a8022dd7eb9e7c2b9f4587e3d0d0fa"
   },
   "src/app/app/api/signing/[id]/invoice-draft/route.ts": {
     "sha256": "e8d8d4ccd4fb31fc0bbe4b8fd98fac65c3af6c93a0e8151d70660235fdd037b8",
     "git_blob": "b6c432492c740a21cc0f4329a44cdf4d1c4cebfc"
   },
   "src/app/app/api/signing/[id]/send/route.ts": {
-    "sha256": "e3fe8aa5493770526e91f01af675dc5f2259e55b67311fa9900c1a9fe4ecebb8",
-    "git_blob": "83d245cee4a7553f6aa693fa284bab54f794aed1"
+    "sha256": "989b1e5b1fdc48ffaf08c3a8ad64e3e9c2772d9bca7570a3e7d845b5a97e0b4c",
+    "git_blob": "7942b2de821f0e382ac74c724e18bcff7c47c114"
   },
   "src/app/app/api/signing/route.ts": {
     "sha256": "665a5bcc9c9e0c6ba39cf5dcd95254d299b98c19de7ec87931109f9b0a0ce520",
@@ -512,8 +516,8 @@
     "git_blob": "9ea48cdeb99a45147a9f211c3eaa0913f4d1545d"
   },
   "src/app/app/contacts/[id]/page.tsx": {
-    "sha256": "081c9c6895c504d5fd85941b32658348934e15405039af89ccfc74c4ca12732f",
-    "git_blob": "b1853fc9a2c04fb54c5042e896f0870600d4f1b1"
+    "sha256": "22899546391f2660b3e4d1312460b13756325b2f9e0ecb6813a7219068f828a8",
+    "git_blob": "b6bbb4367f65df628f56d40780f132547506df9b"
   },
   "src/app/app/contacts/new/page.tsx": {
     "sha256": "218d8fd1e3149b169bb05d14f97539ae5337bf1cbd4f054d76902b73c855d4f5",
@@ -596,28 +600,28 @@
     "git_blob": "ed66c059ca2020b43f01afe2500de272740349c9"
   },
   "src/app/app/signing/[id]/page.tsx": {
-    "sha256": "522f5044651a2f516587bdf1179cd2a571a3516a0fbf44fff9e3730f75e509c6",
-    "git_blob": "26ae889b4473fbceaf52ecbaa6c3231234e6bb86"
+    "sha256": "825c68df404c90c56f59114e964c4e604ae1a9add2bc08742681aeb516a7efc4",
+    "git_blob": "4449218661b2952fee66cc0fce72053af65a17f9"
   },
   "src/app/app/signing/new/page.tsx": {
-    "sha256": "fff8e682b2b374043ebb0a1f9b92d9aa43632f7f004e4dea11f88677e601def4",
-    "git_blob": "795c2be4be59b9771fd77db5f1608b13d3d35029"
+    "sha256": "bc17cd79c0bc528bdc64726497bdcebf057d6e20bd77403241c3fa1d02ee6f15",
+    "git_blob": "2dc879a59024253ad035a57ab899cadbe10cbb46"
   },
   "src/app/app/signing/page.tsx": {
-    "sha256": "03b0a6f3d0f1ca5a3eb282c8d5dc9875a91a38169e4f9eb737a0e8d1a8ba3113",
-    "git_blob": "e8c359a3457d9e6f58f17305441cf1d18861dd95"
+    "sha256": "d856d6f28754f5d966e8d3b32d0962f2441bd8738dc65bed902357703dfedc6b",
+    "git_blob": "93e9495f82903fd20fa539c091ff53950681330b"
   },
   "src/app/brand.css": {
     "sha256": "2606aac65e31df1cb0afd042db76b1553c9e2382093933272ff3f147c25eb72d",
     "git_blob": "de9963407b009e9500d2ff15ecabe49cdbc603df"
   },
   "src/app/editor/[id]/PDFViewer.tsx": {
-    "sha256": "625f179237cb99e3b65e807e5388a3931776b30c8f7da2c12f3606b0faf33e8d",
-    "git_blob": "0aaf0f78df1170b3223a76fde79ab636458353eb"
+    "sha256": "c94de0bae33d74577940d4b7e4a66731fc87fb6d658901b56e30b22c8bb16d14",
+    "git_blob": "9560a75d3a5bbcefeb9bee4b142ae681b80af129"
   },
   "src/app/editor/[id]/page.tsx": {
-    "sha256": "7b6a656e8f6cb50c204c7e2f55e01f7dd094f1ba1999eb38636cc1cfa4bfcfa4",
-    "git_blob": "2549fe4ea1bc86376addc35bf3137a224d68b911"
+    "sha256": "e2133aa2ffc1bfdfb2ee8db1e9c5c9abb1a8e6d43c4bf2c000a48f6fb2397177",
+    "git_blob": "60f8ec0e8b955b9218ecdc1d1c292f845d0a41c6"
   },
   "src/app/editor/layout.tsx": {
     "sha256": "da0d1aeefa74e6a9d956954348cd1eaa847dcbf08102ec3c9456bb7102a8b00e",
@@ -656,8 +660,8 @@
     "git_blob": "a5d798c3e22d39c5e7a6209314e7f86af1e10ba0"
   },
   "src/app/send/[id]/page.tsx": {
-    "sha256": "4beebd2675c68e0403351049de218fd67c1d9fd5a6ea112f47df484422572400",
-    "git_blob": "8e78d695a3d25084dd4be2d07941f6c4779acb66"
+    "sha256": "66fb656f067b949472fe8c5f5557daf663074465c40c00871134ce0ea860cdf3",
+    "git_blob": "72d068d6137243877e357547bc9551eb4fd2042c"
   },
   "src/app/send/layout.tsx": {
     "sha256": "da0d1aeefa74e6a9d956954348cd1eaa847dcbf08102ec3c9456bb7102a8b00e",
@@ -672,8 +676,8 @@
     "git_blob": "a5d798c3e22d39c5e7a6209314e7f86af1e10ba0"
   },
   "src/components/AppFrame.tsx": {
-    "sha256": "638d06bcc374c07ab06806581925d340f8b01a2c3e50b67f693a7a9f756e7f04",
-    "git_blob": "3716744f17b5a091a627e3e755847e20882da949"
+    "sha256": "ea96b0b3c9b9cf81d91a8833d2413baa8e29b294645638cc83314dc1ec0da4e3",
+    "git_blob": "300ba1733f683c8176db2a8d709d5bf7ee6e96d3"
   },
   "src/components/BillingCard.tsx": {
     "sha256": "f3c047f91f8eb7b0ef31c48f0f7e7f542d26f2edcc7936fb1ed224a22531cf0f",
@@ -752,12 +756,12 @@
     "git_blob": "c99aaa9273a4b5148591c1d965416ce2bcab5817"
   },
   "src/components/NewSigningRequest.tsx": {
-    "sha256": "5343b238cda78b81f857e3d09bf6f414506e858247334cd3353ca43f984a3b97",
-    "git_blob": "25fa0333bdc4857665d1e00356f73b882b279c56"
+    "sha256": "d501a18b1fa3d80abacf7f506d0c834102646850d48865699f1ef169dae47720",
+    "git_blob": "95ec4232d16d841fc40aa3fd2a39327cd83ffa36"
   },
   "src/components/PdfDocumentCanvas.tsx": {
-    "sha256": "7d83245fb8b61ac09c735fdf3b8742c2085355016250c0ffe961405d9d33bb60",
-    "git_blob": "2ee3ae9972a9956740a5c9b16c14c5e85c58ed06"
+    "sha256": "b266c679e34af013da204232a126eee1fb0c6cbbfee788d8a2fcfb7c647a66e2",
+    "git_blob": "2f17b457ffae92f3071d9c96b92110de505572be"
   },
   "src/components/PortalShareButton.tsx": {
     "sha256": "f217b17dbf41f3d7400423b684a2b5bdab0c912004893192b56391af9275588a",
@@ -792,20 +796,32 @@
     "git_blob": "a2a4ad1f3f8b505eadc9bc412775623dd226e41d"
   },
   "src/components/SignDocument.tsx": {
-    "sha256": "559bb5bc40ccb12256f226978d30e9b5223b94c5dd8afc2703bc44ad238e50ff",
-    "git_blob": "cedf3e98cd19c67ddce2b12e307486f41c426db6"
+    "sha256": "621eeeb32069664eb171640576e26e7d7297db07e13dba26ff06bb7f50317116",
+    "git_blob": "51a21b16687704b331799431b921e18c24373700"
   },
   "src/components/SignUpload.tsx": {
-    "sha256": "e86935f686dc65968f540de6d7605e55e8a317c31c03ebe67d4d084ff1c379d1",
-    "git_blob": "607790298a6606b0b68ad154fd4b58c519dbb051"
+    "sha256": "c7a032161df19629d693c4097d9ca2cf3d507b7390b185cbd1ab2a796e637380",
+    "git_blob": "de9eaea3e2797f8e05c44f1888c1aa00872b5361"
+  },
+  "src/components/SignedCustomerDocuments.tsx": {
+    "sha256": "222302405973fa9ed2a016b655835b126e2697c9f7b520dcf47937f3b1d1530d",
+    "git_blob": "6de99985fe7c066a9a61549cbb8930b5000682cf"
   },
   "src/components/SigningActions.tsx": {
-    "sha256": "7985b9fc2097668bb408a114e7cf6002a60ac4b96e06fe9d73a3eafb50a5bf18",
-    "git_blob": "276b4a4a9ded6044cb5d30d2d0a1cd6d267d8bb7"
+    "sha256": "610f18febd0394b038bbde920c2a420666bd834bec1dba5da772f67f03df9472",
+    "git_blob": "49cc46383f5483ff4a176bd78f12146a10d9a39b"
   },
   "src/components/SimpleExpenseForm.tsx": {
     "sha256": "650bade077de9b22a67ec9db14ba0a7193d2d8959d472a9e018e628100946bb2",
     "git_blob": "714a3f8df015b4db7938e793d46b93d5ff25431f"
+  },
+  "src/components/StandaloneEditor.tsx": {
+    "sha256": "8ea6c8673c4afbd90b3dd77e41a3f1132d3c170ad77c918646a76e91bc2b75d2",
+    "git_blob": "7d70aa8aa9be588707fb9f9e8b4075a5644f3038"
+  },
+  "src/components/StandaloneSend.tsx": {
+    "sha256": "dd39b8ee963d621034814c541157a3e54770d96309987a98739b743078299546",
+    "git_blob": "6c16eff54864f42175f94a7ca60782a73f0ad7f4"
   },
   "src/components/dashboard/DashboardClient.tsx": {
     "sha256": "5f8b5813ebe15f963dbc7072f5a0ef4d134970ed359ee62ccb3b274ea8770a20",
@@ -870,6 +886,10 @@
   "src/components/ui/textarea.tsx": {
     "sha256": "ec7c92aaed80f6923a7caa4bfe4eead395b50a7001504fd7fbb0b9381804dae9",
     "git_blob": "e56b0affd7e03bd8359092a81d81c606ab09972d"
+  },
+  "src/components/use-signing-copy.ts": {
+    "sha256": "b43f8860ad0bb8374806e8eda905c9f42920ea603d5191c87a1b7f227129cd34",
+    "git_blob": "9a088fff53b83f6e125fd73cb28f3bd6fc7b8e6a"
   },
   "src/data/ch_zip_to_canton.json": {
     "sha256": "69ed6c1ae650f3c2356ceae29aa11d600b6e5dcc2f2a33ee6ee06c611ff19c16",
@@ -967,9 +987,29 @@
     "sha256": "fca80b3243fffb19465b897832de57bb040a84ab18604882221e2d156bf55c6d",
     "git_blob": "a71e0badc509234630def3c6a73330e7e8b7219d"
   },
+  "src/lib/signing-copy-server.ts": {
+    "sha256": "d3f0d45a76b0a2bdcd17457bae2cf820a0e98c09f90ed39edb44bef23d60f852",
+    "git_blob": "4c1b929d33153aa295e96b187e7c5779aa16e92a"
+  },
+  "src/lib/signing-copy.cjs": {
+    "sha256": "6b7f2e2676be2300774a42d13110c66a02f80c7d3636e60b34d5849cc7b2ef76",
+    "git_blob": "866b0d8d1923e06484667b3d57253bba8e714437"
+  },
   "src/lib/signing-core.cjs": {
     "sha256": "c23677deac32d26f9de3e733896562a3f5871243dd0ec88dbb82a0b988dcd9c2",
     "git_blob": "1dadfb0f311b8eb36f323a3b07ceaa9fb6234086"
+  },
+  "src/lib/signing-fields.cjs": {
+    "sha256": "2c32f49a61541cb32407c2f743b83e6f7620a7b061a16d5da6dd93699b36830e",
+    "git_blob": "7b39cdbde5374559e511310e6d747bcd27f27cf3"
+  },
+  "src/lib/signing-flow.cjs": {
+    "sha256": "70ba1814452949864a2b7372a9e4c3d330d3dbc51e51e19d0f6ea8d3d79da802",
+    "git_blob": "a016bbbe690299072af7f74fc82a360fc9816021"
+  },
+  "src/lib/signing-flow.test.cjs": {
+    "sha256": "b2d65b9db359c1c961d1919660422a4d9c17f2ae9634fa79c5289527c2f137d1",
+    "git_blob": "bc89f05872b9efbcdbee70892dc9b87ab52f7939"
   },
   "src/lib/signing.ts": {
     "sha256": "c5ce1ebdd01ccd22c688eeffe692cc484be0ae6e7de7e659a7a7add3ed5be8de",
@@ -984,8 +1024,8 @@
     "git_blob": "6d98ca249e2fa05e1f58ee5e0d26b0edb3bdbb0f"
   },
   "src/middleware.ts": {
-    "sha256": "6bb9ba002a6e3903eea22e93360c6bb3b0fcf38a0f15c5cd3400a64c5ac59f29",
-    "git_blob": "b5ffe95c38a4cae40faad700dd1d6f01a93b1d85"
+    "sha256": "c550ad36abe65a4d050c34291579aa7cb648a5fbbb86f52809062964490b0290",
+    "git_blob": "efca8a580f99fd43169dbf4d5c1c032506f077ac"
   },
   "src/server/auth.ts": {
     "sha256": "d61bb7713879be9394f69ac0891600bae78088e7644289d49a74241d6bdd1626",
@@ -998,6 +1038,10 @@
   "src/server/mailer.ts": {
     "sha256": "fdd8a1b76e66ecefd3445639559f76911506dcb7c19485304c1c82fa62291447",
     "git_blob": "2cb081d4341d426e95e312b911f0fbe2033ea63b"
+  },
+  "src/server/signing-access.ts": {
+    "sha256": "346ac0072cc7423081129378ad173ae80934996784e68e76f4470acdd66efadd",
+    "git_blob": "bde827dbc07c849af7a7b6934acc685ba263807b"
   },
   "src/types/modules.d.ts": {
     "sha256": "05413d74a1163250dff992b25678f0d7093046d0b897717e062ab5c4a248a099",

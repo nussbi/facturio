@@ -70,7 +70,7 @@ export default function AppFrame({ children, publicBase = "https://facturio.ch",
         </div>
 
         <GlobalHeader />
-        <main className="mx-auto w-full max-w-5xl p-4 sm:p-6 md:p-8 flex-1">{children}</main>
+        <main className={`mx-auto w-full ${pathname?.includes("/signing") ? "max-w-[1600px]" : "max-w-5xl"} p-4 sm:p-6 md:p-8 flex-1`}>{children}</main>
         <BrandFooter publicBase={publicBase} appBase={appBase} signBase={signBase}/>
       </div>
     </div>

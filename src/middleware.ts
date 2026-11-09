@@ -41,7 +41,7 @@ export function middleware(request: NextRequest) {
 
   // Handle sign host routing — public signer pages + standalone signing app
   if (hostname === "staging.sign.facturio.ch" || hostname === "sign.facturio.ch" || hostname.startsWith("sign.")) {
-    const isPublicClientRoute = pathname === "/" || pathname.startsWith("/editor/") || pathname.startsWith("/send/") || pathname === "/sign" || pathname.startsWith("/sign/") || pathname.startsWith("/api/sign/") || pathname.startsWith("/api/upload");
+    const isPublicClientRoute = pathname === "/" || pathname.startsWith("/editor/") || pathname.startsWith("/send/") || pathname === "/sign" || pathname.startsWith("/sign/") || pathname.startsWith("/api/sign/") || pathname.startsWith("/api/upload") || pathname.startsWith("/api/send/");
     if (!isPublicClientRoute) {
       const url = request.nextUrl.clone();
       // Redirect non-sign paths to the landing page on the main domain

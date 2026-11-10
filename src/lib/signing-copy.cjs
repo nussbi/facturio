@@ -1,4 +1,8 @@
 const rows = {
+  senderEmail: ['Your email (for replies)', 'Ihre E-Mail-Adresse (für Antworten)', 'Votre adresse e-mail (pour les réponses)', 'La tua e-mail (per le risposte)'],
+  senderEmailHelp: ['No account needed. Replies go to this address; the message is delivered from Facturio’s verified email address.', 'Kein Konto erforderlich. Antworten gehen an diese Adresse; die Nachricht wird über die verifizierte E-Mail-Adresse von Facturio zugestellt.', 'Aucun compte nécessaire. Les réponses arrivent à cette adresse ; le message est envoyé depuis l’adresse e-mail vérifiée de Facturio.', 'Nessun account necessario. Le risposte arrivano a questo indirizzo; il messaggio viene inviato dall’indirizzo e-mail verificato di Facturio.'],
+  invalidSenderEmail: ['Enter a valid sender email address.', 'Geben Sie eine gültige Absender-E-Mail-Adresse ein.', 'Saisissez une adresse e-mail d’expéditeur valide.', 'Inserisci un indirizzo e-mail del mittente valido.'],
+  replyToLine: ['Reply to the sender: {email}', 'Antworten an den Absender: {email}', 'Répondre à l’expéditeur : {email}', 'Rispondi al mittente: {email}'],
   initialsRequired: ['Please add your initials.', 'Bitte Initialen hinzufügen.', 'Veuillez ajouter vos initiales.', 'Aggiungi le tue iniziali.'],
   title: ['Sign documents', 'Dokumente unterschreiben', 'Signer des documents', 'Firma documenti'],
   intro: ['Upload PDFs, place signing fields, and track responses.', 'PDFs hochladen, Unterschriftsfelder platzieren und Antworten verfolgen.', 'Importez des PDF, placez les champs de signature et suivez les réponses.', 'Carica PDF, posiziona i campi firma e segui le risposte.'],

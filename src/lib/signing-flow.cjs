@@ -31,9 +31,21 @@ function customerSignedFilter(userId, contactId, email, allowEmailMatch) {
 }
 function flowError(code, status) { const error = new Error(code); error.status = status; return error; }
 function esc(value) { return String(value).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])); }
-async function deliverSigningRequest({ client, envelope, recipientEmail = envelope.recipientEmail, env, fetchEmail = fetch, senderName = 'Facturio', replyTo, lang = 'en' }) {
+function signingSenderEmail(value, required = false) {
+  if (value === undefined || value === null || value === '') {
+    if (required) throw flowError('invalidSenderEmail', 400);
+    return undefined;
+  }
+  if (typeof value !== 'string') throw flowError('invalidSenderEmail', 400);
+  const email = value.trim().toLowerCase();
+  const parts = email.split('@');
+  if (email.length > 254 || parts.length !== 2 || !parts[0] || parts[0].length > 64 || parts[0].startsWith('.') || parts[0].endsWith('.') || parts[0].includes('..') || !/^[a-z0-9.!#$%&'*+/=?^_`{|}~-]+$/.test(parts[0]) || !/^[a-z0-9](?:[a-z0-9-]*[a-z0-9])?(?:\.[a-z0-9](?:[a-z0-9-]*[a-z0-9])?)+$/.test(parts[1])) throw flowError('invalidSenderEmail', 400);
+  return email;
+}
+async function deliverSigningRequest({ client, envelope, recipientEmail = envelope.recipientEmail, env, fetchEmail = fetch, senderName = 'Facturio', replyTo, requireSenderEmail = false, lang = 'en' }) {
   const { signingCopy } = require('./signing-copy.cjs');
-  const t = key => signingCopy(lang, key);
+  const t = (key, values) => signingCopy(lang, key, values);
+  const senderEmail = signingSenderEmail(replyTo, requireSenderEmail);
   const email = String(recipientEmail || '').trim().toLowerCase();
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) || email.length > 254) throw flowError('invalidEmail', 400);
   if (envelope.status !== 'DRAFT') throw flowError('notDraft', 409);
@@ -52,9 +64,9 @@ async function deliverSigningRequest({ client, envelope, recipientEmail = envelo
   if (mode === 'link-only') return { success: true, status: 'SENT', signingUrl, previewMode: true };
   try {
     const result = await fetchEmail('https://api.resend.com/emails', { method: 'POST', headers: { Authorization: `Bearer ${env.RESEND_API_KEY}`, 'Content-Type': 'application/json', 'Idempotency-Key': `facturio-signing-${envelope.id}-${tokenHash.slice(0, 16)}` }, body: JSON.stringify({
-      from: env.INVOICE_FROM_EMAIL || env.FROM_EMAIL || 'Facturio <emails@facturio.ch>', to: email, reply_to: replyTo || undefined,
+      from: env.INVOICE_FROM_EMAIL || env.FROM_EMAIL || 'Facturio <emails@facturio.ch>', to: email, reply_to: senderEmail,
       subject: `${t('request')}: ${envelope.title}`,
-      html: `<div style="font-family:Arial,sans-serif;color:#17202a;max-width:600px;margin:auto"><h2>${esc(t('request'))}</h2><p>${esc(senderName)}</p><p><strong>${esc(envelope.title)}</strong></p><p>${esc(t('recipientInvitation'))}</p><p><a href="${esc(signingUrl)}" style="display:inline-block;background:#4f46e5;color:white;padding:12px 20px;border-radius:8px;text-decoration:none">${esc(t('openSigning'))}</a></p></div>`,
+      html: `<div style="font-family:Arial,sans-serif;color:#17202a;max-width:600px;margin:auto"><h2>${esc(t('request'))}</h2><p>${esc(senderName)}</p>${senderEmail ? `<p>${esc(t('replyToLine', { email: senderEmail }))}</p>` : ""}<p><strong>${esc(envelope.title)}</strong></p><p>${esc(t('recipientInvitation'))}</p><p><a href="${esc(signingUrl)}" style="display:inline-block;background:#4f46e5;color:white;padding:12px 20px;border-radius:8px;text-decoration:none">${esc(t('openSigning'))}</a></p></div>`,
     }) });
     if (!result.ok) throw new Error('Email delivery failed');
     const data = await result.json();
@@ -64,4 +76,4 @@ async function deliverSigningRequest({ client, envelope, recipientEmail = envelo
     throw flowError('sendFailed', 502);
   }
 }
-module.exports = { GUEST_OWNER_ID, GUEST_COOKIE, guestDraftIds, guestDraftCookie, canManageEnvelope, newSigningField, editSigningField, customerSignedFilter, deliverSigningRequest };
+module.exports = { GUEST_OWNER_ID, GUEST_COOKIE, guestDraftIds, guestDraftCookie, canManageEnvelope, newSigningField, editSigningField, customerSignedFilter, signingSenderEmail, deliverSigningRequest };

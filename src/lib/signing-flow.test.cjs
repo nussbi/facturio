@@ -90,3 +90,33 @@ test('PDF field geometry remains browser-safe and does not load server signing l
   assert.ok(!canvas.includes('@/lib/signing-flow.cjs'));
   assert.ok(!/node:crypto|Buffer|require\(/.test(geometry));
 });
+test('guest sender addresses become Reply-To while From stays the verified Facturio address', async () => {
+  const client = db(); let body;
+  await deliverSigningRequest({ client, envelope, recipientEmail: 'recipient@example.org', replyTo: ' Sender+Signing@Example.org ', requireSenderEmail: true, env: { RESEND_API_KEY: 'test-only', FROM_EMAIL: 'Facturio <emails@facturio.ch>' }, async fetchEmail(_url, options) { body = JSON.parse(options.body); return { ok: true, async json() { return { id: 'guest-sender-test' }; } }; } });
+  assert.equal(body.reply_to, 'sender+signing@example.org');
+  assert.equal(body.from, 'Facturio <emails@facturio.ch>');
+  assert.ok(body.html.includes('Reply to the sender: sender+signing@example.org'));
+});
+test('missing, malformed and header-injection guest sender addresses never claim or email a draft', async () => {
+  for (const replyTo of [undefined, '', ' ', 'not-an-email', 'sender@example.org\r\nBcc: victim@example.org', 'Sender <sender@example.org>', ['sender@example.org'], 'a..b@example.org', '.sender@example.org', 'sender@invalid_domain.org']) {
+    const client = db();
+    await assert.rejects(deliverSigningRequest({ client, envelope, replyTo, requireSenderEmail: true, env: { STAGING_MODE: '1' }, async fetchEmail() { assert.fail('Must not send invalid sender'); } }), error => error.status === 400 && error.message === 'invalidSenderEmail');
+    assert.equal(client.updates.length, 0);
+  }
+});
+test('sender reply information is translated in every supported email language', async () => {
+  for (const lang of languages) {
+    let body;
+    await deliverSigningRequest({ client: db(), envelope, recipientEmail: 'recipient@example.org', replyTo: 'sender@example.org', requireSenderEmail: true, lang, env: { RESEND_API_KEY: 'test-only' }, async fetchEmail(_url, options) { body = JSON.parse(options.body); return { ok: true, async json() { return { id: 'localized-sender-test' }; } }; } });
+    assert.ok(body.html.includes(signingCopy(lang, 'replyToLine', { email: 'sender@example.org' })));
+    assert.equal(body.reply_to, 'sender@example.org');
+  }
+});
+test('guest form and route require sender email while authenticated senders use their account details', () => {
+  const ui = fs.readFileSync(path.join(__dirname, '../components/StandaloneSend.tsx'), 'utf8');
+  const route = fs.readFileSync(path.join(__dirname, '../app/api/send/[id]/route.ts'), 'utf8');
+  assert.ok(ui.includes('name="senderEmail" type="email" autoComplete="email" required'));
+  assert.ok(ui.includes('senderEmail: senderEmail.trim()'));
+  assert.ok(route.includes('requireSenderEmail: !user'));
+  assert.ok(route.includes('user ? company?.email || user.email : senderEmail'));
+});

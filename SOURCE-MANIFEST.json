@@ -16,8 +16,8 @@
     "git_blob": "a91e8ba6b33bfa614b0b2579bf6bb5aa2c0d2c8b"
   },
   "SIGNING-UPDATE.md": {
-    "sha256": "5879ffd495ee6656116984c818cc3fca5070963ff6e94c932880ff9c9bc97d74",
-    "git_blob": "027b05acd46b7be22120e3842b36bcabd4b6445d"
+    "sha256": "cfd6eb5f517cb2b045dda708a421de659c9af75a143ab0c5d4e67465b7bc1b47",
+    "git_blob": "1a1c534bbdd1a18e29a12d6412e3afc169623fec"
   },
   "SOURCE-SYNC.md": {
     "sha256": "143b4ea93987d27bafb82990fc71f7605310ea59e31fba046010e462b6fd2049",
@@ -300,8 +300,8 @@
     "git_blob": "bc45cc59487d6aec8d6a95ab9e568c6c71ea8ec9"
   },
   "src/app/api/send/[id]/route.ts": {
-    "sha256": "edef42bd3ee200caad83455d3c3baad36c169bb10b0a2eb9c05efcfb6de46ee3",
-    "git_blob": "10a9549460f225ef67f2a2dfc2dd58a1ddaef528"
+    "sha256": "c203db44bb401475d3ea1ed60c80ebc8fbe7644cc913facde7c4970dc9daa98f",
+    "git_blob": "eaf7c02f91217091b40fd256b3141ad2ea78ebb3"
   },
   "src/app/api/sign/[token]/document/route.ts": {
     "sha256": "37bb4769e4abc4378532bd3a2f78e7d0d92d88da9250e2d8d756a7c6a984e91a",
@@ -820,8 +820,8 @@
     "git_blob": "7d70aa8aa9be588707fb9f9e8b4075a5644f3038"
   },
   "src/components/StandaloneSend.tsx": {
-    "sha256": "dd39b8ee963d621034814c541157a3e54770d96309987a98739b743078299546",
-    "git_blob": "6c16eff54864f42175f94a7ca60782a73f0ad7f4"
+    "sha256": "d75c44df37a6843932835891af38c11af060f3d0025655f82d0613b4de44b3a8",
+    "git_blob": "c4fe492c99e018481f8a346cfc56aa7fba552afe"
   },
   "src/components/dashboard/DashboardClient.tsx": {
     "sha256": "5f8b5813ebe15f963dbc7072f5a0ef4d134970ed359ee62ccb3b274ea8770a20",
@@ -992,8 +992,8 @@
     "git_blob": "4c1b929d33153aa295e96b187e7c5779aa16e92a"
   },
   "src/lib/signing-copy.cjs": {
-    "sha256": "6b7f2e2676be2300774a42d13110c66a02f80c7d3636e60b34d5849cc7b2ef76",
-    "git_blob": "866b0d8d1923e06484667b3d57253bba8e714437"
+    "sha256": "e1f08e35179b2870ef93bf81f589c229de12de955f0c1f1f8a40d6ac2d2593a4",
+    "git_blob": "964c79989a64ba21a7c8a098ad556c3e3bf58f47"
   },
   "src/lib/signing-core.cjs": {
     "sha256": "c23677deac32d26f9de3e733896562a3f5871243dd0ec88dbb82a0b988dcd9c2",
@@ -1004,12 +1004,12 @@
     "git_blob": "7b39cdbde5374559e511310e6d747bcd27f27cf3"
   },
   "src/lib/signing-flow.cjs": {
-    "sha256": "70ba1814452949864a2b7372a9e4c3d330d3dbc51e51e19d0f6ea8d3d79da802",
-    "git_blob": "a016bbbe690299072af7f74fc82a360fc9816021"
+    "sha256": "01a017d47dede717ad1d84f232d83f91234b11cd2bad5b51ff482b14fc5bd157",
+    "git_blob": "e05eda400cb619ba5d4e8d37079c289e72b17455"
   },
   "src/lib/signing-flow.test.cjs": {
-    "sha256": "b2d65b9db359c1c961d1919660422a4d9c17f2ae9634fa79c5289527c2f137d1",
-    "git_blob": "bc89f05872b9efbcdbee70892dc9b87ab52f7939"
+    "sha256": "5f47c9ef9de8fc26aa4ae47133b69fbd27e0caea8274d3631da7765b0cd42c63",
+    "git_blob": "e073dd4ce87aff81c5dbba6b120614a4c5c0ae3e"
   },
   "src/lib/signing.ts": {
     "sha256": "c5ce1ebdd01ccd22c688eeffe692cc484be0ae6e7de7e659a7a7add3ed5be8de",

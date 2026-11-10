@@ -7,3 +7,7 @@ Standalone uploads require account ownership or an HMAC-signed HttpOnly guest ca
 Signed account documents appear on customer records by explicit customer linkage, or an unambiguous recipient-email match within the same account. Archived signed PDFs support viewing/downloading; unsigned originals are not represented as signed PDFs. Existing invoice portal logic and analytics are unchanged.
 
 Verification: 37 unit/regression tests pass; TypeScript no-emit validation passes; production Cloudflare bundle builds. Browser verification on isolated Workers/D1/R2 proves two-page PDF rendering, page-two field placement, keyboard move/resize, save/send, guest invitations and completed signed PDF image placement. Authenticated API tests prove customer association, signed PDF download and EN/DE/FR/IT rendering. Cloudflare security challenges prevented direct public-host browser verification; no security controls were weakened. No real test emails were sent and no customer production records were modified.
+
+## Guest sender email follow-up
+
+Anonymous senders enter their email on step three without registering. The validated address is the Reply-To header and is shown as reply information in the localized recipient email; From stays the configured verified Facturio address. Logged-in senders use account/profile details rather than guest-supplied overrides. Missing, invalid or header-injection guest addresses are rejected before a draft is claimed or any email is sent. All 41 signing, portal and branding regression tests pass.

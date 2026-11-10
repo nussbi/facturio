@@ -10,9 +10,13 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
   const envelope = await getManagedSigningEnvelope((await params).id);
   if (!envelope) return NextResponse.json({ error: "Not found" }, { status: 404 });
   try {
-    const { recipientEmail } = await req.json();
-    const result = await deliverSigningRequest({ client: prisma, envelope, recipientEmail, env: process.env, lang: await getSigningLanguage() });
-    return NextResponse.json({ ...result, guest: !await getCurrentUser() }, { headers: { "Cache-Control": "private, no-store" } });
+    const { recipientEmail, senderEmail } = await req.json();
+    const user = await getCurrentUser();
+    const company = user ? await prisma.orgProfile.findUnique({ where: { userId: user.id }, select: { company: true, firstName: true, lastName: true, email: true } }) : null;
+    const replyTo = user ? company?.email || user.email : senderEmail;
+    const senderName = company?.company || [company?.firstName, company?.lastName].filter(Boolean).join(" ") || "Facturio";
+    const result = await deliverSigningRequest({ client: prisma, envelope, recipientEmail, replyTo, requireSenderEmail: !user, senderName, env: process.env, lang: await getSigningLanguage() });
+    return NextResponse.json({ ...result, guest: !user }, { headers: { "Cache-Control": "private, no-store" } });
   } catch (error: any) {
     return NextResponse.json({ error: "Could not send for signature.", code: error.message }, { status: error.status || 500, headers: { "Cache-Control": "private, no-store" } });
   }

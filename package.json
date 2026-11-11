@@ -45,6 +45,7 @@
     "pdf-lib": "^1.17.1",
     "pdfjs-dist": "^6.4.299",
     "pdfkit": "^0.17.2",
+    "posthog-js": "^1.447.12",
     "react": "19.1.0",
     "react-dom": "19.1.0",
     "react-hook-form": "^7.65.0",

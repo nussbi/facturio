@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useLanguage } from "@/components/language-context";
+import posthog from "posthog-js";
 
 export default function BillingCard({ plan, autoUpgrade = false }: { plan: string; autoUpgrade?: boolean }) {
   const { t } = useLanguage();
@@ -18,6 +19,7 @@ export default function BillingCard({ plan, autoUpgrade = false }: { plan: strin
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Request failed");
       if (data.url) {
+        posthog.capture(endpoint === "checkout" ? "checkout_started" : "billing_portal_opened");
         window.location.href = data.url;
       } else {
         setError(t("settings.billingError"));

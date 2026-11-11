@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import PdfDocumentCanvas, { type FieldType, type SigningField } from "@/components/PdfDocumentCanvas";
 import { useSigningT } from "@/components/use-signing-copy";
+import posthog from "posthog-js";
 import quoteOcr from "@/lib/quote-ocr.cjs";
 const { parseQuoteText } = quoteOcr;
 type ContactOption = { id: string; label: string; email: string };
@@ -104,6 +105,11 @@ export default function NewSigningRequest({ contacts, initialContactId = "" }: {
       const response = await fetch("/app/api/signing", { method: "POST", body: form });
       const data = await response.json();
       if (!response.ok) throw new Error(t("saveFailed"));
+      posthog.capture("signing_request_created", {
+        document_type: documentType,
+        field_count: fields.length,
+        has_contact: Boolean(contactId),
+      });
       window.location.assign(`/app/signing/${encodeURIComponent(data.id)}`);
     } catch (e) {
       setError(e instanceof Error ? e.message : t("saveFailed")); setStatus(""); setWorking(false);

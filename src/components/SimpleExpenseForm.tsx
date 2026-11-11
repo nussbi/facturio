@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { useToast } from "@/components/ui/Toast";
 import { Button } from "@/components/ui/Button";
 import { useLanguage } from "@/components/language-context";
+import posthog from "posthog-js";
 
 export function SimpleExpenseForm({ 
   contacts = [] as { id: string; name: string }[] 
@@ -50,6 +51,10 @@ export function SimpleExpenseForm({
     });
     
     if (res.ok) {
+      posthog.capture("expense_created", {
+        currency: form.currency,
+        has_contact: Boolean(form.contactId),
+      });
       show({ title: t("expense.addedSuccess"), variant: "success" });
       router.push('/expenses');
     } else {

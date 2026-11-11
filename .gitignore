@@ -53,3 +53,4 @@ coverage/
 
 # Cloudflare
 .dev.vars
+.env.local

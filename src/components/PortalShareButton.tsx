@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import posthog from "posthog-js";
 
 export default function PortalShareButton({ contactId }: { contactId: string }) {
   const [url, setUrl] = useState<string | null>(null);
@@ -54,6 +55,9 @@ export default function PortalShareButton({ contactId }: { contactId: string }) 
       }
       if (!response.ok) throw new Error(body.error || "Could not create portal link");
       if (body.url) {
+        posthog.capture("customer_portal_link_created", {
+          replaced_existing_link: hasExistingShare,
+        });
         setUrl(body.url);
         setHasExistingShare(true);
       }
@@ -68,6 +72,7 @@ export default function PortalShareButton({ contactId }: { contactId: string }) 
     if (!url) return;
     try {
       await navigator.clipboard.writeText(url);
+      posthog.capture("customer_portal_link_copied");
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     } catch {

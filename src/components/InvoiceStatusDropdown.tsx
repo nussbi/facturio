@@ -6,6 +6,7 @@ import { FileText, Clock, CheckCircle, AlertCircle, ChevronDown } from "lucide-r
 import { cn } from "@/lib/utils";
 import { useLanguage } from "@/components/language-context";
 import { useToast } from "@/components/ui/Toast";
+import posthog from "posthog-js";
 
 type Status = "DRAFT" | "SENT" | "PAID" | "CANCELLED";
 
@@ -52,6 +53,10 @@ export default function InvoiceStatusDropdown({
       try {
         const res = await fetch(endpoint, { method: "PATCH" });
         if (res.ok) {
+          posthog.capture("invoice_status_changed", {
+            previous_status: currentStatus,
+            status: newStatus,
+          });
           window.location.reload();
         } else {
           show({ title: t("invoice.failedSend"), variant: "error" });

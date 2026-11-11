@@ -136,6 +136,7 @@ export async function POST(req: NextRequest) {
     console.error('New invoice PDF archival failed', { id: invoice.id, error });
     return NextResponse.json({ error: 'Invoice created but PDF archive failed. Retry its PDF download.', invoiceId: invoice.id }, { status: 503 });
   }
+
   return NextResponse.json({ invoice }, { status: 201 });
 }
 

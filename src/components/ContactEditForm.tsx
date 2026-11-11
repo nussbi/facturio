@@ -3,6 +3,7 @@
 import { useState, useTransition } from "react";
 import { useToast } from "@/components/ui/Toast";
 import { useLanguage } from "@/components/language-context";
+import posthog from "posthog-js";
 
 export default function ContactEditForm({ id, initial }: { id: string; initial: any }) {
   const { t } = useLanguage();
@@ -32,7 +33,7 @@ export default function ContactEditForm({ id, initial }: { id: string; initial: 
         iban: form.iban || undefined,
       })
     });
-    if (res.ok) { show({ title: t("contacts.updated"), variant: "success" }); window.location.href = `/contacts/${id}`; } else { show({ title: t("contacts.updateFailed"), variant: "error" }); }
+    if (res.ok) { posthog.capture("contact_updated", { country: form.country ?? "CH", currency: form.currency ?? "CHF" }); show({ title: t("contacts.updated"), variant: "success" }); window.location.href = `/contacts/${id}`; } else { show({ title: t("contacts.updateFailed"), variant: "error" }); }
   }
 
   return (

@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { useToast } from "@/components/ui/Toast";
 import { COUNTRIES } from "@/lib/countries";
 import { useLanguage } from "@/components/language-context";
+import posthog from "posthog-js";
 
 export function ContactForm() {
   const { t } = useLanguage();
@@ -51,6 +52,11 @@ export function ContactForm() {
       body: JSON.stringify({ ...form }),
     });
     if (res.ok) {
+      posthog.capture("contact_created", {
+        country: form.country,
+        currency: form.currency,
+        has_company: Boolean(form.company),
+      });
       setForm({ company: "", firstName: "", lastName: "", street: "", street2: "", zipCode: "", place: "", email: "", telephoneFix: "", mobile: "", country: "CH", currency: "CHF", iban: "" });
       setErrors({});
       show({ title: t("contact.created"), variant: "success" });

@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { FileText, Save, Loader2 } from 'lucide-react';
 import { useLanguage } from '@/components/language-context';
 import { useToast } from '@/components/ui/Toast';
+import posthog from "posthog-js";
 
 export default function SaveInvoiceButton({ id }: { id: string }) {
   const { t } = useLanguage();
@@ -23,6 +24,7 @@ export default function SaveInvoiceButton({ id }: { id: string }) {
       if (!blob.size) throw new Error('Empty PDF');
       const sent = await fetch(`/api/invoices/${id}/mark-sent`, { method: 'PATCH' });
       if (!sent.ok) throw new Error(`Failed to mark sent (HTTP ${sent.status})`);
+      posthog.capture("invoice_marked_sent");
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
@@ -46,6 +48,7 @@ export default function SaveInvoiceButton({ id }: { id: string }) {
       if (!pdf.ok) throw new Error(`PDF archival failed (HTTP ${pdf.status})`);
       const res = await fetch(`/api/invoices/${id}/mark-draft`, { method: 'PATCH' });
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      posthog.capture("invoice_marked_draft");
       show({ title: t('status.draft'), variant: 'success' });
       window.location.reload();
     } catch (error) {

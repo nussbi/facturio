@@ -8,14 +8,37 @@ import GlobalHeader from "@/components/GlobalHeader";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Menu, X } from "lucide-react";
 import { useLanguage } from "@/components/language-context";
+import posthog from "posthog-js";
 
-export default function AppFrame({ children, publicBase = "https://facturio.ch", appBase = "https://app.facturio.ch", signBase = "https://sign.facturio.ch" }: { children: React.ReactNode; publicBase?: string; appBase?: string; signBase?: string }) {
+type AuthenticatedUser = {
+  id: string;
+  email: string;
+  name: string | null;
+  role: string;
+  plan: string;
+};
+
+export default function AppFrame({ children, user, publicBase = "https://facturio.ch", appBase = "https://app.facturio.ch", signBase = "https://sign.facturio.ch" }: { children: React.ReactNode; user: AuthenticatedUser | null; publicBase?: string; appBase?: string; signBase?: string }) {
   const pathname = usePathname();
   const { t } = useLanguage();
   const [menuOpen, setMenuOpen] = useState(false);
+  const identifiedUserId = useRef<string | null>(null);
+
+  useEffect(() => {
+    if (!user || identifiedUserId.current === user.id) return;
+
+    if (identifiedUserId.current) posthog.reset();
+    posthog.identify(user.id, {
+      email: user.email,
+      name: user.name ?? undefined,
+      role: user.role,
+      plan: user.plan,
+    });
+    identifiedUserId.current = user.id;
+  }, [user]);
 
   // Hide chrome (sidebar/header) on auth-related minimal pages
   // Covers both direct and rewritten paths like "/login", "/app/login", "/reset", "/app/reset"

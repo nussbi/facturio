@@ -5,6 +5,7 @@ import { createPortal } from "react-dom";
 import { useRouter } from "next/navigation";
 import { useToast } from "@/components/ui/Toast";
 import { useLanguage } from "@/components/language-context";
+import posthog from "posthog-js";
 
 interface SendInvoiceButtonProps {
   invoiceId: string;
@@ -51,6 +52,7 @@ export default function SendInvoiceButton({
       });
 
       if (res.ok) {
+        posthog.capture("invoice_emailed", { is_resend: isResend });
         show({ title: t("invoice.sentSuccess"), variant: "success" });
         setShowDialog(false);
         window.location.reload();

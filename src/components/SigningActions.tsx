@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import { useSigningT } from "@/components/use-signing-copy";
+import posthog from "posthog-js";
 export default function SigningActions({ id, initialStatus, documentType, extractedData, initialInvoiceId }: { id: string; initialStatus: string; documentType: string; extractedData: string | null; initialInvoiceId: string | null }) {
   const t = useSigningT();
   const [status, setStatus] = useState(initialStatus);
@@ -13,13 +14,13 @@ export default function SigningActions({ id, initialStatus, documentType, extrac
   const extraction = (() => { try { return extractedData ? JSON.parse(extractedData) : null; } catch { return null; } })();
   async function send() {
     setBusy(true); setError(""); setMessage("");
-    try { const res = await fetch(`/app/api/signing/${encodeURIComponent(id)}/send`, { method: "POST" }); const data = await res.json(); if (!res.ok) throw new Error(t(["invalidEmail", "signatureRequired", "notDraft", "requestChanged", "deliveryUnavailable"].includes(data.code) ? data.code : "sendFailed")); setStatus("SENT"); setSigningUrl(data.signingUrl || ""); setMessage(t(data.previewMode ? "previewText" : "sentText")); }
+    try { const res = await fetch(`/app/api/signing/${encodeURIComponent(id)}/send`, { method: "POST" }); const data = await res.json(); if (!res.ok) throw new Error(t(["invalidEmail", "signatureRequired", "notDraft", "requestChanged", "deliveryUnavailable"].includes(data.code) ? data.code : "sendFailed")); posthog.capture("signing_request_sent", { document_type: documentType, preview_mode: Boolean(data.previewMode) }); setStatus("SENT"); setSigningUrl(data.signingUrl || ""); setMessage(t(data.previewMode ? "previewText" : "sentText")); }
     catch (e) { setError(e instanceof Error ? e.message : t("sendFailed")); } finally { setBusy(false); }
   }
   async function copy() { try { await navigator.clipboard.writeText(signingUrl); setMessage(t("copied")); } catch { setError(t("copyFailed")); } }
   async function createInvoice() {
     setBusy(true); setError(""); setMessage("");
-    try { const res = await fetch(`/app/api/signing/${encodeURIComponent(id)}/invoice-draft`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ confirmed }) }); const data = await res.json(); if (!res.ok) throw new Error(t("invoiceFailed")); setInvoiceId(data.invoiceId); setMessage(t("invoiceDone")); }
+    try { const res = await fetch(`/app/api/signing/${encodeURIComponent(id)}/invoice-draft`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ confirmed }) }); const data = await res.json(); if (!res.ok) throw new Error(t("invoiceFailed")); posthog.capture("invoice_draft_created_from_quote"); setInvoiceId(data.invoiceId); setMessage(t("invoiceDone")); }
     catch (e) { setError(e instanceof Error ? e.message : t("invoiceFailed")); } finally { setBusy(false); }
   }
   return <div className="space-y-4">

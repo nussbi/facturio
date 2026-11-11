@@ -6,6 +6,7 @@ import { Home, Users, FileText, Settings, User, PenTool } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { useEffect, useState } from "react";
 import { useLanguage } from "@/components/language-context";
+import posthog from "posthog-js";
 
 function cx(...cls: Array<string | false | null | undefined>) {
   return cls.filter(Boolean).join(" ");
@@ -41,6 +42,7 @@ export default function Sidebar({ isMobile = false }: { isMobile?: boolean }) {
         credentials: 'include' 
       });
       if (res.ok) {
+        posthog.reset();
         const marketingUrl = process.env.NEXT_PUBLIC_MARKETING_URL || "https://facturio.ch";
         window.location.href = marketingUrl;
       }

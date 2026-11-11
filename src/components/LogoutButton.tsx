@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useLanguage } from "@/components/language-context";
 import { LogOut } from "lucide-react";
+import posthog from "posthog-js";
 
 export default function LogoutButton() {
   const { t } = useLanguage();
@@ -17,6 +18,7 @@ export default function LogoutButton() {
         credentials: "include",
       });
       if (res.ok) {
+        posthog.reset();
         const marketingUrl =
           process.env.NEXT_PUBLIC_MARKETING_URL || "https://facturio.ch";
         window.location.href = marketingUrl;
